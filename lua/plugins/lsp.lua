@@ -15,19 +15,25 @@ return {
   },
 	{
 		'neovim/nvim-lspconfig',
-    config = function () 
+    config = function ()
       -- Setup language servers.
       local lspconfig = require('lspconfig')
-      lspconfig.lua_ls.setup({})
-      lspconfig.tsserver.setup({})
-      lspconfig.clangd.setup({})
 
       --Enable (broadcasting) snippet capability for completion
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities.textDocument.completion.completionItem.snippetSupport = true
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
       lspconfig.html.setup {
         capabilities = capabilities,
       }
+
+      lspconfig.lua_ls.setup({
+        capabilities = capabilities,
+      })
+      lspconfig.tsserver.setup({
+        capabilities = capabilities,
+      })
+      lspconfig.clangd.setup({
+        capabilities = capabilities,
+      })
 
       -- Global mappings.
       -- See `:help vim.diagnostic.*` for documentation on any of the below functions

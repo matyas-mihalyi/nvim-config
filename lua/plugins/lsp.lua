@@ -9,7 +9,7 @@ return {
     'williamboman/mason-lspconfig.nvim',
     config = function()
       require('mason-lspconfig').setup({
-        ensure_installed = { 'lua_ls', 'tsserver', 'clangd' }
+        ensure_installed = { 'lua_ls', 'tsserver', 'clangd', 'html', 'cssls' }
       })
     end
   },
@@ -27,7 +27,11 @@ return {
       capabilities.textDocument.completion.completionItem.snippetSupport = true
       lspconfig.html.setup {
         capabilities = capabilities,
+        filetypes = { 'html', 'ejs' }
       }
+      lspconfig.cssls.setup({
+        capabilities = capabilities,
+      })
 
       -- Global mappings.
       -- See `:help vim.diagnostic.*` for documentation on any of the below functions

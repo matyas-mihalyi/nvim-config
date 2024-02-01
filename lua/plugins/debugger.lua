@@ -13,13 +13,36 @@ return {
     'mxsdev/nvim-dap-vscode-js',
   },
   config = function ()
-    local dap, dapui, dapjs = require('dap') require('dapui') require('dap-vscode-js')
+    local dap = require('dap')
+    local dapui = require('dapui')
+    local dapjs = require('dap-vscode-js')
 
     dapui.setup()
     dapjs.setup({
-      debugger_path = '$USER/etc/vscode-js-debug'
-      adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
+      debugger_path = vim.fn.stdpath('data') .. "/lazy/vscode-js-debug",
+      adapters = { 'pwa-node' },
     })
+
+    for _, language in ipairs({ "typescript", "javascript" }) do
+      -- https://github.com/microsoft/vscode-js-debug/blob/main/OPTIONS.md
+      dap.configurations[language] = {
+        {
+          type = "pwa-node",
+          request = "launch",
+          name = "Launch file",
+          program = "${file}",
+          cwd = "${workspaceFolder}",
+        },
+        {
+          type = "pwa-node",
+          request = "attach",
+          name = "Attach",
+          processId = require'dap.utils'.pick_process,
+          cwd = "${workspaceFolder}",
+        }
+      }
+    end
+
     vim.keymap.set('n', '<leader>bp', dap.toggle_breakpoint, {})
     vim.keymap.set('n', '<leader>ds', dap.continue, {})
 
